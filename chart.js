@@ -72,35 +72,48 @@ function remove(input) {
 }
 
 // function to change the data passed to the chart
-function newChartSelect(){
+function newChartSelect() {
 	var radios = document.getElementsByName("type");
-	var type = "RHHINCOME"
+	var type = "RHHINCOME";
 	if (radios[1].checked) {
-		type = "ERHHINCOME"
+		type = "ERHHINCOME";
 	}
 	if (radios[2].checked) {
-		type = "RPPRHHINCOME"
+		type = "RPPRHHINCOME";
 	}
 	if (radios[3].checked) {
-		type = "RPPERHHINCOME"
+		type = "RPPERHHINCOME";
 	}
-    var x = document.getElementById("yearSelect");
-    var i = x.selectedIndex;
-    year = x.options[i].text;
-    var prevYear = document.getElementById("data");
-    prevYear.parentNode.removeChild(prevYear);
-    var script = document.createElement('script');
-    script.setAttribute("type", "text/javascript")
-	script.setAttribute("id", "data")
-    script.onload = function () {
-		for (var j = 0; j < labels.length; j++){
-			labeler(labels[j],true)
+
+	var x = document.getElementById("yearSelect");
+	var i = x.selectedIndex;
+	var year = x.options[i].text;
+
+	// Remove the old data script
+	var prevYear = document.getElementById("data");
+	if (prevYear && prevYear.parentNode) {
+		prevYear.parentNode.removeChild(prevYear);
+	}
+
+	// Create the new script tag
+	var script = document.createElement('script');
+	script.type = "text/javascript";
+	script.id = "data";
+	script.onload = function () {
+		for (var j = 0; j < labels.length; j++) {
+			labeler(labels[j], true);
 		}
-        resetChartData(data,year,type)
-    };
-    script.src = 'decile/'.concat('YEAR',year,'_',type,'.js');
-    var chartHTML = document.getElementById("chartScript");
-    document.body.insertBefore(script, chartHTML);
+		resetChartData(data, year, type);
+	};
+	script.src = 'decile/YEAR' + year + '_' + type + '.js';
+
+	// Try inserting before chartScript, fallback to append
+	var chartHTML = document.getElementById("chartScript");
+	if (chartHTML && chartHTML.parentNode) {
+		document.body.insertBefore(script, chartHTML);
+	} else {
+		document.body.appendChild(script);
+	}
 }
 
 function resetChartData(input,yr,type){
