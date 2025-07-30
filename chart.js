@@ -75,28 +75,22 @@ function remove(input) {
 function newChartSelect() {
 	var radios = document.getElementsByName("type");
 	var type = "RHHINCOME";
-	if (radios[1].checked) {
-		type = "ERHHINCOME";
-	}
-	if (radios[2].checked) {
-		type = "RPPRHHINCOME";
-	}
-	if (radios[3].checked) {
-		type = "RPPERHHINCOME";
-	}
+	if (radios[1].checked) type = "ERHHINCOME";
+	if (radios[2].checked) type = "RPPRHHINCOME";
+	if (radios[3].checked) type = "RPPERHHINCOME";
 
 	var x = document.getElementById("yearSelect");
 	var i = x.selectedIndex;
 	var year = x.options[i].text;
 
-	// Remove the old data script
+	// Remove previous data script if it exists
 	var prevYear = document.getElementById("data");
 	if (prevYear && prevYear.parentNode) {
 		prevYear.parentNode.removeChild(prevYear);
 	}
 
-	// Create the new script tag
-	var script = document.createElement('script');
+	// Create new data script
+	var script = document.createElement("script");
 	script.type = "text/javascript";
 	script.id = "data";
 	script.onload = function () {
@@ -105,17 +99,11 @@ function newChartSelect() {
 		}
 		resetChartData(data, year, type);
 	};
-	script.src = 'decile/YEAR' + year + '_' + type + '.js';
+	script.src = "decile/YEAR" + year + "_" + type + ".js";
 
-	// Try inserting before chartScript, fallback to append
-	var chartHTML = document.getElementById("chartScript");
-	if (chartHTML && chartHTML.parentNode) {
-		document.body.insertBefore(script, chartHTML);
-	} else {
-		document.body.appendChild(script);
-	}
+	// Just append safely at the end of <body>
+	document.body.appendChild(script);
 }
-
 function resetChartData(input,yr,type){
 	chart.allLabels[2].text = yr
 	axisName = "Annual Household Income (2018$)"
